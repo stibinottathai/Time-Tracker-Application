@@ -12,18 +12,60 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Office Tracker',
+      title: 'Time Tracker',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        useMaterial3: true,
-        primaryColor: const Color(0xFF4CAF50),
-        scaffoldBackgroundColor: const Color(0xFF121212),
-        textTheme: GoogleFonts.outfitTextTheme(
-          Theme.of(context).textTheme,
-        ).apply(bodyColor: Colors.white, displayColor: Colors.white),
-      ),
+      themeMode: ThemeMode.system,
+      theme: _buildLightTheme(context),
+      darkTheme: _buildDarkTheme(context),
       home: const HomeScreen(),
+    );
+  }
+
+  ThemeData _buildLightTheme(BuildContext context) {
+    final baseTextTheme = GoogleFonts.outfitTextTheme(
+      Theme.of(context).textTheme,
+    );
+    return ThemeData(
+      brightness: Brightness.light,
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color(0xFF4CAF50),
+        brightness: Brightness.light,
+        surface: const Color(0xFFFFFFFF), // White surface
+        onSurface: const Color(0xFF1F2937),
+        primary: const Color(0xFF4CAF50),
+        secondary: const Color(0xFF0175C2),
+        background: const Color(0xFFF3F4F6),
+      ),
+      scaffoldBackgroundColor: const Color(0xFFF3F4F6),
+      textTheme: baseTextTheme.apply(
+        bodyColor: const Color(0xFF1F2937),
+        displayColor: const Color(0xFF1F2937),
+      ),
+    );
+  }
+
+  ThemeData _buildDarkTheme(BuildContext context) {
+    final baseTextTheme = GoogleFonts.outfitTextTheme(
+      Theme.of(context).textTheme,
+    );
+    return ThemeData(
+      brightness: Brightness.dark,
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color(0xFF4CAF50),
+        brightness: Brightness.dark,
+        surface: const Color(0xFF1E1E1E),
+        onSurface: Colors.white,
+        primary: const Color(0xFF4CAF50),
+        secondary: const Color(0xFF0175C2),
+        background: const Color(0xFF121212),
+      ),
+      scaffoldBackgroundColor: const Color(0xFF121212),
+      textTheme: baseTextTheme.apply(
+        bodyColor: Colors.white,
+        displayColor: Colors.white,
+      ),
     );
   }
 }

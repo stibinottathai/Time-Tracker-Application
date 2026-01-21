@@ -85,70 +85,86 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final dateStr = DateFormat('EEEE, d MMMM').format(now);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF121212), // Dark Premium Background
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Header
-              Text(
-                'Office Tracker',
-                style: GoogleFonts.outfit(
-                  color: Colors.white70,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 1.2,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                dateStr,
-                style: GoogleFonts.outfit(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: 40),
-
-              // Main Status Card
-              Expanded(child: _buildStatusCard()),
-
-              const SizedBox(height: 40),
-
-              // Buttons
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildActionButton(
-                      label: 'Check In',
-                      color: const Color(0xFF4CAF50), // Green
-                      icon: Icons.login,
-                      onTap: _handleCheckIn,
-                      isDisabled: _timerService.isCheckedIn,
-                    ),
+      extendBodyBehindAppBar: true,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark
+                ? [const Color(0xFF121212), const Color(0xFF1E1E1E)]
+                : [const Color(0xFFF3F4F6), const Color(0xFFFFFFFF)],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 20.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Header
+                Text(
+                  'Office Tracker',
+                  style: GoogleFonts.outfit(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 1.2,
                   ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child: _buildActionButton(
-                      label: 'Check Out',
-                      color: const Color(0xFFE53935), // Red
-                      icon: Icons.logout,
-                      onTap: _handleCheckOut,
-                      isDisabled: !_timerService.isCheckedIn,
-                    ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  dateStr,
+                  style: GoogleFonts.outfit(
+                    color: theme.colorScheme.onSurface,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
                   ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 40),
+
+                // Main Status Card
+                Expanded(child: _buildStatusCard()),
+
+                const SizedBox(height: 40),
+
+                // Buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildActionButton(
+                        label: 'Check In',
+                        color: const Color(0xFF4CAF50), // Green
+                        icon: Icons.login,
+                        onTap: _handleCheckIn,
+                        isDisabled: _timerService.isCheckedIn,
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: _buildActionButton(
+                        label: 'Check Out',
+                        color: const Color(0xFFE53935), // Red
+                        icon: Icons.logout,
+                        onTap: _handleCheckOut,
+                        isDisabled: !_timerService.isCheckedIn,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
@@ -174,16 +190,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.5),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
         ],
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.onSurface.withValues(alpha: 0.05),
+        ),
       ),
       child: Stack(
         children: [
@@ -227,7 +247,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   "Total Duration",
                   style: GoogleFonts.outfit(
-                    color: Colors.white54,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
                     fontSize: 14,
                   ),
                 ),
@@ -235,7 +257,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   formatDuration(duration),
                   style: GoogleFonts.outfit(
-                    color: isGoalMet ? const Color(0xFF4CAF50) : Colors.white,
+                    color: isGoalMet
+                        ? const Color(0xFF4CAF50)
+                        : Theme.of(context).colorScheme.onSurface,
                     fontSize: 48,
                     fontWeight: FontWeight.bold,
                     fontFeatures: [const FontFeature.tabularFigures()],
@@ -281,12 +305,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildStatItem(String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(icon, color: Colors.white24, size: 20),
+        Icon(
+          icon,
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+          size: 20,
+        ),
         const SizedBox(height: 8),
         Text(
           value,
           style: GoogleFonts.outfit(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
@@ -294,7 +322,12 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 4),
         Text(
           label,
-          style: GoogleFonts.outfit(color: Colors.white38, fontSize: 12),
+          style: GoogleFonts.outfit(
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.4),
+            fontSize: 12,
+          ),
         ),
       ],
     );
@@ -314,9 +347,13 @@ class _HomeScreenState extends State<HomeScreen> {
       margin: const EdgeInsets.only(top: 24),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.onSurface.withValues(alpha: 0.05),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -327,7 +364,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 "Breaks",
                 style: GoogleFonts.outfit(
-                  color: Colors.white70,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -335,13 +374,15 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.1),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   "Total: ${formatDuration(totalBreak)}",
                   style: GoogleFonts.outfit(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSurface,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -365,7 +406,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Icon(
                         isCurrent ? Icons.coffee : Icons.check_circle_outline,
-                        color: isCurrent ? Colors.orange : Colors.white38,
+                        color: isCurrent
+                            ? Colors.orange
+                            : Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withValues(alpha: 0.3),
                         size: 16,
                       ),
                       const SizedBox(width: 12),
@@ -373,7 +418,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text(
                           "${DateFormat('h:mm a').format(b.start)} - ${b.end != null ? DateFormat('h:mm a').format(b.end!) : 'Now'}",
                           style: GoogleFonts.outfit(
-                            color: Colors.white70,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.7),
                             fontSize: 14,
                           ),
                         ),
@@ -381,7 +428,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(
                         formatDuration(b.duration),
                         style: GoogleFonts.outfit(
-                          color: isCurrent ? Colors.orange : Colors.white54,
+                          color: isCurrent
+                              ? Colors.orange
+                              : Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.5),
                           fontWeight: isCurrent
                               ? FontWeight.bold
                               : FontWeight.normal,

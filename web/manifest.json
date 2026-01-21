@@ -1,6 +1,6 @@
 {
-    "name": "checkin",
-    "short_name": "checkin",
+    "name": "Time Tracker",
+    "short_name": "Time Tracker",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

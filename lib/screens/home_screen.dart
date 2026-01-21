@@ -340,7 +340,8 @@ class _HomeScreenState extends State<HomeScreen> {
     String formatDuration(Duration d) {
       String twoDigits(int n) => n.toString().padLeft(2, '0');
       String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
-      return "${twoDigits(d.inHours)}:$twoDigitMinutes"; // H:MM compact
+      String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
+      return "${twoDigits(d.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
     }
 
     return Container(
